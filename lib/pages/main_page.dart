@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:juju_flutter/pages/activity_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   initData() {
     _body = IndexedStack(
-      children: <Widget>[],
+      children: <Widget>[ActivityPage(),ActivityPage(),ActivityPage(),ActivityPage()],
       index: _tabIndex,
     );
   }
@@ -55,6 +56,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    initData();
+
     return MaterialApp(
       navigatorKey: navigatorKey,
       theme: ThemeData.light(),
