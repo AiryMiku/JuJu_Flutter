@@ -82,6 +82,7 @@ class ActivityPageState extends State<ActivityPage> {
         });
   }
 
+  // ignore: missing_return
   Widget makeItem(int i) {
     if(i != dataList.length - 1) {
       var item = dataList[i];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:juju_flutter/pages/activity_page.dart';
+import 'package:juju_flutter/pages/group_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   initData() {
     _body = IndexedStack(
-      children: <Widget>[ActivityPage(),ActivityPage(),ActivityPage(),ActivityPage()],
+      children: <Widget>[ActivityPage(), GroupPage(), ActivityPage(),ActivityPage()],
       index: _tabIndex,
     );
   }
