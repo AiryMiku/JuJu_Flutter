@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'dart:convert';
@@ -9,7 +10,6 @@ class HttpUtil {
   static const String GET = "get";
   static const String POST = "post";
 
-
   static void get(String url, Function callback, {
         Map<String, String> params,
         Map<String, String> headers,
@@ -17,7 +17,12 @@ class HttpUtil {
       }) async {
 
     if (!url.startsWith("http")) {
-      url = Api.BASE_URL + url;
+      if(Platform.isIOS) {
+        url = Api.IOS_BASE_URL + url;
+      }
+      if(Platform.isAndroid) {
+        url = Api.ANDROID_BASE_URL + url;
+      }
     }
 
     if (params != null && params.isNotEmpty) {
@@ -41,7 +46,12 @@ class HttpUtil {
         Function errorCallback
   }) async {
     if (!url.startsWith("http")) {
-      url = Api.BASE_URL + url;
+      if(Platform.isIOS) {
+        url = Api.IOS_BASE_URL + url;
+      }
+      if(Platform.isAndroid) {
+        url = Api.ANDROID_BASE_URL + url;
+      }
     }
     await _request(url, callback,
         method: POST,
@@ -80,7 +90,8 @@ class HttpUtil {
 
       //以下部分可以根据自己业务需求封装,这里是errorCode>=0则为请求成功,data里的是数据部分
       //记得Map中的泛型为dynamic
-      Map<String, dynamic> map = json.decode(res.body);
+      Utf8Decoder utf8decoder = new Utf8Decoder();
+      Map<String, dynamic> map = json.decode(utf8decoder.convert(res.bodyBytes));
 
       code = map['code'];
       msg = map['msg'];
@@ -91,6 +102,7 @@ class HttpUtil {
       if (callback != null) {
         if (code >= 0) {
           callback(data);
+          print(data);
         } else {
           _handError(errorCallback, msg);
         }

@@ -7,7 +7,6 @@ import 'package:juju_flutter/listItem/group_item.dart';
 class GroupPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => GroupPageState();
-
 }
 
 
@@ -19,23 +18,29 @@ class GroupPageState extends State<GroupPage> {
 
   ScrollController _controller = ScrollController();
 
-  // init component
-  GroupPageState() {
+  @override
+  void initState() {
+    super.initState();
+    _getGroups();
     _controller.addListener((){
       var maxScroll = _controller.position.maxScrollExtent;
       var pixels = _controller.position.pixels;
 
       if(maxScroll == pixels) {
-        ++curPage;
-        getGroups();
+        if(pageCount > curPage*listSize) {
+          ++curPage;
+          _getGroups();
+        } else {
+          Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('没有更多数据了')));
+        }
       }
     });
   }
 
   @override
-  void initState() {
-    super.initState();
-    getGroups();
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -61,20 +66,23 @@ class GroupPageState extends State<GroupPage> {
   Future<Null> _onPullRefresh() async {
     curPage = 1;
     dataList.clear();
-    getGroups();
+    _getGroups();
     return null;
   }
 
 
-  void getGroups() {
+  void _getGroups() {
     Map params = new Map<String, String>();
     params['page'] = curPage.toString();
     params['size'] = listSize.toString();
     HttpUtil.get(Api.ALL_GROUP, (data){
-      if(data != null) {
-        dataList.addAll(data['list']);  // jsonString
-        pageCount = data['count'];
-      }
+
+      setState(() {   // 类似Android 的runOnUiThread,但又不是这个概念，会触发一次build
+        if(data != null) {
+          dataList.addAll(data['list']);  // jsonString
+          pageCount = data['count'];
+        }
+      });
     },
         params: params,
         headers: null,

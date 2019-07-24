@@ -18,25 +18,31 @@ class ActivityPageState extends State<ActivityPage> {
 
   ScrollController _controller = ScrollController();
 
-  // init component
-  ActivityPageState() {
-    _controller.addListener((){
-        var maxScroll = _controller.position.maxScrollExtent;
-        var pixels = _controller.position.pixels;
-
-        if(maxScroll == pixels) {
-          ++curPage;
-          getActivities();
-        }
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    getActivities();
+    _getActivities();
+    _controller.addListener((){
+      var maxScroll = _controller.position.maxScrollExtent;
+      var pixels = _controller.position.pixels;
+
+      if(maxScroll == pixels) {
+        if(pageCount > curPage*listSize) {
+          ++curPage;
+          _getActivities();
+        } else {
+          Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('没有更多数据了')));
+        }
+      }
+    });
   }
-  
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     if(dataList == null || dataList.isEmpty) {
@@ -60,19 +66,22 @@ class ActivityPageState extends State<ActivityPage> {
   Future<Null> _onPullRefresh() async {
     curPage = 1;
     dataList.clear();
-    getActivities();
+    _getActivities();
     return null;
   }
 
 
-  void getActivities() {
+  void _getActivities() {
     Map params = new Map<String, String>();
     params['page'] = curPage.toString();
     params['size'] = listSize.toString();
     HttpUtil.get(Api.ALL_ACTIVITY, (data){
       if(data != null) {
+        setState(() {
           dataList.addAll(data['list']);  // jsonString
           pageCount = data['count'];
+        });
+
       }
     },
         params: params,

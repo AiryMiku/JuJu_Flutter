@@ -1,7 +1,7 @@
 class Api {
-  static const String BASE_URL = "http://127.0.0.1:8000";   // for ios
+  static const String IOS_BASE_URL = "http://127.0.0.1:8000";   // for ios
 
-//  static const String BASE_URL = "http://10.0.2.2:8000";    // for android
+  static const String ANDROID_BASE_URL = "http://10.0.2.2:8000";    // for android
 
   static const String ALL_ACTIVITY = "/activity/indexAll/";
 
