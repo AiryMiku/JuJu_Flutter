@@ -43,8 +43,10 @@ class ActivityPageState extends State<ActivityPage> {
     _controller.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
+//    print('我build了， 你呢？');
     if(dataList == null || dataList.isEmpty) {
       return RefreshIndicator(
         child: Center(

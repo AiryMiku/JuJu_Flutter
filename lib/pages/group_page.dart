@@ -45,6 +45,7 @@ class GroupPageState extends State<GroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('Group page build了， 你呢？');
     if(dataList == null || dataList.isEmpty) {
       return RefreshIndicator(
         child: Center(
